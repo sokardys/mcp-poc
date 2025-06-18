@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "mcp-poc": {
+      "command": "node",
+      "args": [
+        "/Users/sokardys/workspace/sokardys/mcp-poc/build/index.js"
+      ]
+    }
+  }
+} 
