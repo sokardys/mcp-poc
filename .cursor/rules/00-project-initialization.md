@@ -38,8 +38,7 @@ project-root/
 ├── package.json
 ├── tsconfig.json
 ├── vitest.config.ts
-├── README.md
-└── ARCHITECTURE.md
+└── README.md
 ```
 
 ## ⚙️ Configuración de Archivos
@@ -60,8 +59,7 @@ project-root/
     "dev": "npm run build && node build/index.js",
     "test": "npm run build && vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
-    "test:e2e": "mcpgod test build/index.js"
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
