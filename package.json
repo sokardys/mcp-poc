@@ -1,18 +1,20 @@
 {
-  "name": "mcp-poc",
-  "version": "0.1.0",
-  "description": "Proyecto mínimo de MCP (Model Context Protocol) compatible con Claude Desktop",
+  "name": "@sokardys/mcp-poc",
+  "version": "0.1.5",
+  "description": "Servidor MCP (Model Context Protocol) con calculadora, fecha/hora y saludos - Compatible con Claude Desktop",
   "type": "module",
   "main": "build/index.js",
   "bin": {
-    "mcp-poc": "./build/index.js"
+    "mcp-poc": "build/index.js"
   },
   "files": [
-    "build"
+    "build/**/*",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "prebuild": "rm -rf build/",
-    "build": "tsc && node -e \"require('fs').chmodSync('build/index.js', '755')\"",
+    "build": "tsc",
     "dev": "tsc --watch",
     "start": "node build/index.js",
     "prepare": "npm run build",
@@ -40,8 +42,27 @@
     "model-context-protocol",
     "claude",
     "anthropic",
-    "ai"
+    "ai",
+    "calculator",
+    "datetime",
+    "greeting",
+    "server",
+    "typescript"
   ],
-  "author": "Tu Nombre",
-  "license": "MIT"
+  "author": "@sokardys",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sokardys/mcp-poc.git"
+  },
+  "homepage": "https://github.com/sokardys/mcp-poc#readme",
+  "bugs": {
+    "url": "https://github.com/sokardys/mcp-poc/issues"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
 }

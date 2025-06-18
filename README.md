@@ -1,6 +1,6 @@
 # MCP POC - Model Context Protocol Server
 
-Un servidor MCP (Model Context Protocol) mínimo desarrollado en Node.js/TypeScript que es compatible con Claude Desktop.
+Un servidor MCP (Model Context Protocol) desarrollado en Node.js/TypeScript con arquitectura modular que es compatible con Claude Desktop.
 
 ## ¿Qué es MCP?
 
@@ -16,23 +16,28 @@ El **Model Context Protocol (MCP)** es un protocolo abierto desarrollado por Ant
 
 Este servidor MCP incluye tres herramientas de ejemplo:
 
-1. **saludo** - Genera saludos personalizados en español (formal/informal)
-2. **calcular** - Realiza operaciones matemáticas básicas (suma, resta, multiplicación, división)
-3. **fecha_actual** - Obtiene la fecha y hora actual en diferentes formatos
+1. **greeting** - Genera saludos personalizados en español (formal/informal)
+2. **calculator** - Realiza operaciones matemáticas básicas (suma, resta, multiplicación, división)
+3. **get_current_datetime** - Obtiene la fecha y hora actual en diferentes formatos
 
 ## Instalación
 
-### 1. Clonar e instalar dependencias
+### 🚀 Opción 1: Desde NPM (Recomendado)
+
+```bash
+# Instalar globalmente
+npm install -g @sokardys/mcp-poc
+
+# O usar npx (sin instalación)
+npx sokardys-mcp-poc
+```
+
+### 💻 Opción 2: Desarrollo local
 
 ```bash
 git clone <tu-repositorio>
 cd mcp-poc
 npm install
-```
-
-### 2. Compilar el proyecto
-
-```bash
 npm run build
 ```
 
@@ -45,6 +50,21 @@ Edita el archivo de configuración de Claude Desktop:
 
 Añade la configuración del servidor:
 
+#### Para instalación NPM:
+```json
+{
+  "mcpServers": {
+    "mcp-poc": {
+      "command": "npx",
+      "args": ["@sokardys/mcp-poc@latest"],
+      "env": {
+      }
+    }
+  }
+} 
+```
+
+#### Para desarrollo local:
 ```json
 {
   "mcpServers": {
@@ -58,7 +78,7 @@ Añade la configuración del servidor:
 }
 ```
 
-**Importante**: Cambia `/ruta/completa/a/tu/proyecto/mcp-poc/` por la ruta real donde clonaste el proyecto.
+**Importante**: Para desarrollo local, cambia `/ruta/completa/a/tu/proyecto/mcp-poc/` por la ruta real donde clonaste el proyecto.
 
 ### 4. Reiniciar Claude Desktop
 
@@ -70,9 +90,17 @@ Una vez configurado, puedes usar las herramientas en Claude Desktop:
 
 ### Ejemplos de uso:
 
-- **Saludo**: "Saluda a María de forma formal"
-- **Cálculo**: "Calcula 15 × 8" 
-- **Fecha**: "¿Qué hora es?"
+- **Saludo**: "Saluda a María de forma formal" → Usa `greeting`
+- **Cálculo**: "Calcula 15 × 8" → Usa `calculator` 
+- **Fecha**: "¿Qué hora es?" → Usa `get_current_datetime`
+
+### Herramientas disponibles:
+
+| Herramienta | Descripción | Parámetros |
+|-------------|-------------|------------|
+| `greeting` | Saludos personalizados | `name` (string), `formal` (boolean) |
+| `calculator` | Operaciones matemáticas | `operation` (add/subtract/multiply/divide), `a` (number), `b` (number) |
+| `get_current_datetime` | Fecha y hora actual | `format` (short/long/iso) |
 
 ## Scripts disponibles
 
@@ -121,11 +149,12 @@ npm run test:coverage
 Los tests validan:
 
 ✅ **Lista de herramientas** - Verifica que todas las herramientas están disponibles
-✅ **Herramienta saludo** - Formatos formal e informal
-✅ **Calculadora** - Suma, resta, multiplicación, división
-✅ **Manejo de errores** - División por cero, parámetros faltantes
-✅ **Fecha y hora** - Diferentes formatos de fecha
-✅ **Validación de entrada** - Parámetros incorrectos
+✅ **Herramienta greeting** - Formatos formal e informal, nombres personalizados
+✅ **Calculadora** - Suma, resta, multiplicación, división con validación Zod
+✅ **Manejo de errores** - División por cero, parámetros faltantes, McpError apropiados
+✅ **Fecha y hora** - Diferentes formatos (corto, largo, ISO), zonas horarias
+✅ **Validación de entrada** - Schemas Zod, tipos incorrectos, parámetros requeridos
+✅ **Arquitectura modular** - Separación resolver/usecase, orquestador central
 
 ### Pruebas manuales con mcpgod
 
@@ -134,81 +163,12 @@ Los tests validan:
 npx mcpgod tools build/index.js
 
 # Probar herramientas específicas
-npx mcpgod tool build/index.js saludo nombre="Ana" formal=true
-npx mcpgod tool build/index.js calcular operacion="suma" a=15 b=25
-npx mcpgod tool build/index.js fecha_actual formato="largo"
+npx mcpgod tool build/index.js greeting name="Ana" formal=true
+npx mcpgod tool build/index.js calculator operation="add" a=15 b=25
+npx mcpgod tool build/index.js get_current_datetime format="long"
 ```
 
-## Desarrollo
 
-### Estructura del proyecto
-
-```
-mcp-poc/
-├── src/
-│   └── index.ts                    # Servidor MCP principal
-├── tests/                          # Tests automatizados
-│   ├── server.test.ts              # Tests directos del servidor
-│   └── mcpgod.test.ts             # Tests usando mcpgod
-├── build/                          # Código compilado
-├── vitest.config.ts               # Configuración de tests
-├── package.json
-├── tsconfig.json
-└── README.md
-```
-
-### Añadir nuevas herramientas
-
-Para añadir una nueva herramienta:
-
-1. Añade la definición en `ListToolsRequestSchema`
-2. Añade el caso en `CallToolRequestSchema` 
-3. Implementa la función manejadora
-4. **Añade tests** para la nueva herramienta
-5. Recompila con `npm run build`
-
-### Workflow de desarrollo
-
-```bash
-# 1. Desarrollo en paralelo
-npm run dev           # Terminal 1: Recompilación automática
-npm run test:watch    # Terminal 2: Tests automáticos
-
-# 2. Verificar antes de commit
-npm test              # Ejecutar todos los tests
-npm run build         # Compilar para producción
-```
-
-## Depuración
-
-### Problemas comunes:
-
-1. **Herramientas no aparecen**: Verifica la ruta en el archivo de configuración
-2. **Claude no conecta**: Reinicia Claude Desktop después de cambiar la configuración
-3. **Errores de ejecución**: Revisa los logs en la consola de Claude Desktop
-4. **Tests fallan**: Asegúrate de que el proyecto esté compilado (`npm run build`)
-
-### Logs y debugging
-
-```bash
-# Ejecutar servidor con logs de depuración
-NODE_ENV=development npm start
-
-# Inspeccionar comunicación MCP (si funciona)
-npm run inspector
-
-# Prueba manual rápida
-echo '{"jsonrpc": "2.0", "id": 1, "method": "tools/list"}' | node build/index.js
-```
-
-## Distribución como paquete
-
-Para distribuir como paquete npm:
-
-1. Actualiza los campos en `package.json` (nombre, autor, etc.)
-2. Ejecuta los tests: `npm test`
-3. Publica en npm: `npm publish`
-4. Instala globalmente: `npm install -g tu-paquete-mcp`
 
 ## Recursos adicionales
 

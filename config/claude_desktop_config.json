@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "mcp-poc": {
+      "command": "npx",
+      "args": ["@sokardys/mcp-poc@latest"],
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  }
+} 

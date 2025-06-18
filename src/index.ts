@@ -15,7 +15,7 @@ import { ToolResolver } from "./resolver/index.js";
 // Configuración del servidor MCP
 const server = new Server({
   name: "mcp-poc",
-  version: "0.1.0",
+  version: "0.1.5",
 }, {
   capabilities: {
     tools: {},
@@ -53,14 +53,12 @@ async function main() {
   
   // Mensaje de depuración (solo se ve cuando se ejecuta directamente)
   if (process.env.NODE_ENV === 'development') {
-    console.error('Servidor MCP POC iniciado - Versión 0.1.0');
+    console.error('Servidor MCP POC iniciado - Versión 0.1.5');
   }
 }
 
-// Iniciar el servidor
-if (import.meta.url === `file://${process.argv[1]}`) {
-  main().catch((error) => {
-    console.error("Error fatal:", error);
-    process.exit(1);
-  });
-} 
+// Iniciar el servidor automáticamente
+main().catch((error) => {
+  console.error("Error fatal:", error);
+  process.exit(1);
+}); 
