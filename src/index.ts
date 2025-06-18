@@ -10,7 +10,7 @@ import {
   CallToolRequest,
 } from "@modelcontextprotocol/sdk/types.js";
 
-import { manejarSaludo, manejarCalcular, manejarFechaActual, getToolsDefinition } from "./tools.js";
+import { ToolResolver } from "./resolver/index.js";
 
 // Configuración del servidor MCP
 const server = new Server({
@@ -25,7 +25,7 @@ const server = new Server({
 // Lista de herramientas disponibles
 server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
-    tools: getToolsDefinition(),
+    tools: ToolResolver.getToolDefinitions(),
   };
 });
 
@@ -34,22 +34,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request: CallToolRequest)
   const { name, arguments: args } = request.params;
 
   try {
-    switch (name) {
-      case "saludo":
-        return manejarSaludo(args);
-      
-      case "calcular":
-        return manejarCalcular(args);
-      
-      case "fecha_actual":
-        return manejarFechaActual(args);
-      
-      default:
-        throw new McpError(
-          ErrorCode.MethodNotFound,
-          `Herramienta desconocida: ${name}`
-        );
-    }
+    return await ToolResolver.resolveAndExecute(name, args);
   } catch (error) {
     if (error instanceof McpError) {
       throw error;

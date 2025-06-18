@@ -22,16 +22,18 @@ describe('MCP Server E2E Tests with mcpgod', () => {
       timeout: 10000 
     });
     
-    expect(output).toContain('¡Hola Mundo!');
+    expect(output).toContain('Mundo');
+    expect(output).toContain('¿Cómo estás?');
   });
 
   it('debería ejecutar la herramienta saludo formal', () => {
-    const output = execSync(`npx mcpgod tool ${serverPath} saludo nombre="Sr. Test" formal=true`, { 
+    const output = execSync(`npx mcpgod tool ${serverPath} saludo nombre="Sr. Test" formal="true"`, { 
       encoding: 'utf8',
       timeout: 10000 
     });
     
-    expect(output).toContain('Buenos días, Sr./Sra. Sr. Test');
+    expect(output).toContain('Sr. Test');
+    expect(output).toContain('Es un placer saludarle');
   });
 
   it('debería ejecutar suma correctamente', () => {
@@ -40,7 +42,7 @@ describe('MCP Server E2E Tests with mcpgod', () => {
       timeout: 10000 
     });
     
-    expect(output).toContain('25 + 17 = 42');
+    expect(output).toContain('Suma: 25 + 17 = 42');
   });
 
   it('debería ejecutar resta correctamente', () => {
@@ -49,7 +51,7 @@ describe('MCP Server E2E Tests with mcpgod', () => {
       timeout: 10000 
     });
     
-    expect(output).toContain('100 - 23 = 77');
+    expect(output).toContain('Resta: 100 - 23 = 77');
   });
 
   it('debería ejecutar multiplicación correctamente', () => {
@@ -58,7 +60,7 @@ describe('MCP Server E2E Tests with mcpgod', () => {
       timeout: 10000 
     });
     
-    expect(output).toContain('8 × 9 = 72');
+    expect(output).toContain('Multiplicación: 8 × 9 = 72');
   });
 
   it('debería ejecutar división correctamente', () => {
@@ -67,7 +69,7 @@ describe('MCP Server E2E Tests with mcpgod', () => {
       timeout: 10000 
     });
     
-    expect(output).toContain('84 ÷ 12 = 7');
+    expect(output).toContain('División: 84 ÷ 12 = 7');
   });
 
   it('debería obtener la fecha en formato corto', () => {
